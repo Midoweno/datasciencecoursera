@@ -13,18 +13,19 @@ library(readxl)
 
 
 complete<-function(directory,id=1:332){
-  listofdf<-lapply(id,function(x){
+  mylist<-lapply(id,function(x){
     ## make sure the x is here, not id or else it will do 1:10 for x instead of 1 and iterate through
     df<-read.csv(file.path(directory,paste0(sprintf("%03d",x),".csv")))
     ##Idea is remove all rows with na values, then use nrow() to return
-    df<-na.omit(df)
     ##<-c(x,nrow(df)) Doesn't work we need to return a df
-    
+    ##Now we have a df returned w/o na values for whatever csv file id was
     ##BELOW LEFT OFF, WE NEED TO CHANGE IT SO INSTEAD OF LIST OF DF RETURNED, IT RETURNS 1 DF WITH ALL THE INFO WE NEEDED, SO FIND A WAY TO STORE IT IN THE SAME DATAFRAME
-    finaldf<-data.frame(
-      id=c(x),
-      nobs=c(nrow(df))
-    )
-    finaldf
+    NumberofCompleted<-nrow(na.omit(df))
+    ##This creates number of completed, which we will then put into our dataframe.
+    data.frame(id=x,nobs=NumberofCompleted)
   })
+  do.call(rbind,mylist)
+  
+## So listofdf object returns a list of df w/o NA values
+  
 }
